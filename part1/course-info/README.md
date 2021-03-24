@@ -1,70 +1,242 @@
-# Getting Started with Create React App
+### Exercises 1.1.-1.2.
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Exercises are submitted through GitHub and by marking completed exercises in the [submission application](https://studies.cs.helsinki.fi/stats/courses/fullstackopen).
 
-## Available Scripts
+You may submit all the exercises of this course into the same repository, or use multiple repositories. If you submit exercises of different parts into the same repository, please use a sensible naming scheme for the directories.
 
-In the project directory, you can run:
+One very functional file structure for the submission repository is as follows:
 
-### `yarn start`
+```text
+part0
+part1
+  courseinfo
+  unicafe
+  anecdotes
+part2
+  phonebook
+  countries
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+See [this](https://github.com/fullstack-hy2020/example-submission-repository)!
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+For each part of the course there is a directory, which further branches into directories containing a series of exercises, like "unicafe" for part 1.
 
-### `yarn test`
+For each web application for a series of exercises, it is recommended to submit all files relating to that application, except for the directory *node_modules*.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+The exercises are submitted **one part at a time**. When you have submitted the exercises for a part of the course you can no longer submit undone exercises for the same part.
 
-### `yarn build`
+Note that in this part, there are more exercises besides those found below. *Do not submit your work* until you have completed all of the exercises you want to submit for the part.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### 1.1: course information, step1
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+*The application that we will start working on in this exercise will be further developed in a few of the following exercises. In this and other upcoming exercise sets in this course, it is enough to only submit the final state of the application. If desired, you may also create a commit for each exercise of the series, but this is entirely optional.*
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Use create-react-app to initialize a new application. Modify *index.js* to match the following
 
-### `yarn eject`
+```js
+import ReactDOM from 'react-dom'
+import App from './App'
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+ReactDOM.render(
+  <App />, 
+  document.getElementById('root')
+)
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+and *App.js* to match the following
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```js
+import React from 'react'
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+const App = () => {
+  const course = 'Half Stack application development'
+  const part1 = 'Fundamentals of React'
+  const exercises1 = 10
+  const part2 = 'Using props to pass data'
+  const exercises2 = 7
+  const part3 = 'State of a component'
+  const exercises3 = 14
 
-## Learn More
+  return (
+    <div>
+      <h1>{course}</h1>
+      <p>
+        {part1} {exercises1}
+      </p>
+      <p>
+        {part2} {exercises2}
+      </p>
+      <p>
+        {part3} {exercises3}
+      </p>
+      <p>Number of exercises {exercises1 + exercises2 + exercises3}</p>
+    </div>
+  )
+}
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+export default App
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+and remove extra files (App.css, App.test.js, logo.svg, setupTests.js, reportWebVitals.js)).
 
-### Code Splitting
+Unfortunately, the entire application is in the same component. Refactor the code so that it consists of three new components: *Header*, *Content*, and *Total*. All data still resides in the *App* component, which passes the necessary data to each component using *props*. *Header* takes care of rendering the name of the course, *Content* renders the parts and their number of exercises and *Total* renders the total number of exercises.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Define the new components in file *App.js*.
 
-### Analyzing the Bundle Size
+The *App* component's body will approximately be as follows:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```js
+const App = () => {
+  // const-definitions
 
-### Making a Progressive Web App
+  return (
+    <div>
+      <Header course={course} />
+      <Content ... />
+      <Total ... />
+    </div>
+  )
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+**WARNING** create-react-app automatically makes the project a git repository unless the application is created within an already existing repository. Most likely you **do not want** the project to become a repository, so run the command *rm -rf .git* in the root of the project.
 
-### Advanced Configuration
+#### 1.2: course information, step2
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+Refactor the *Content* component so that it does not render any names of parts or their number of exercises by itself. Instead it only renders three *Part* components of which each renders the name and number of exercises of one part.
 
-### Deployment
+```js
+const Content = ... {
+  return (
+    <div>
+      <Part .../>
+      <Part .../>
+      <Part .../>
+    </div>
+  )
+}
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+Our application passes on information in quite a primitive way at the moment, since it is based on individual variables. This situation will improve soon.
 
-### `yarn build` fails to minify
+### Exercises 1.3.-1.5.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+*We continue building the application that we started working on in the previous exercises. You can write the code into the same project, since we are only interested in the final state of the submitted application.*
+
+**Pro-tip:** you may run into issues when it comes to the structure of the *props* that components receive. A good way to make things more clear is by printing the props to the console, e.g. as follows:
+
+```js
+const Header = (props) => {
+  console.log(props)  return <h1>{props.course}</h1>
+}
+```
+
+#### 1.3: course information step3
+
+Let's move forward to using objects in our application. Modify the variable definitions of the *App* component as follows and also refactor the application so that it still works:
+
+```js
+const App = () => {
+  const course = 'Half Stack application development'
+  const part1 = {
+    name: 'Fundamentals of React',
+    exercises: 10
+  }
+  const part2 = {
+    name: 'Using props to pass data',
+    exercises: 7
+  }
+  const part3 = {
+    name: 'State of a component',
+    exercises: 14
+  }
+
+  return (
+    <div>
+      ...
+    </div>
+  )
+}
+```
+
+#### 1.4: course information step4
+
+And then place the objects into an array. Modify the variable definitions of *App* into the following form and modify the other parts of the application accordingly:
+
+```js
+const App = () => {
+  const course = 'Half Stack application development'
+  const parts = [
+    {
+      name: 'Fundamentals of React',
+      exercises: 10
+    },
+    {
+      name: 'Using props to pass data',
+      exercises: 7
+    },
+    {
+      name: 'State of a component',
+      exercises: 14
+    }
+  ]
+
+  return (
+    <div>
+      ...
+    </div>
+  )
+}
+```
+
+**NB** at this point *you can assume that there are always three items*, so there is no need to go through the arrays using loops. We will come back to the topic of rendering components based on items in arrays with a more thorough exploration in the [next part of the course](https://fullstackopen.com/en/part2).
+
+However, do not pass different objects as separate props from the *App* component to the components *Content* and *Total*. Instead, pass them directly as an array:
+
+```js
+const App = () => {
+  // const definitions
+
+  return (
+    <div>
+      <Header course={course} />
+      <Content parts={parts} />
+      <Total parts={parts} />
+    </div>
+  )
+}
+```
+
+#### 1.5: course information step5
+
+Let's take the changes one step further. Change the course and its parts into a single JavaScript object. Fix everything that breaks.
+
+```js
+const App = () => {
+  const course = {
+    name: 'Half Stack application development',
+    parts: [
+      {
+        name: 'Fundamentals of React',
+        exercises: 10
+      },
+      {
+        name: 'Using props to pass data',
+        exercises: 7
+      },
+      {
+        name: 'State of a component',
+        exercises: 14
+      }
+    ]
+  }
+
+  return (
+    <div>
+      ...
+    </div>
+  )
+}
+```
+
+
