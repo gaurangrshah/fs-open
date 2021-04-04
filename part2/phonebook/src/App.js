@@ -51,7 +51,7 @@ const App = () => {
   useEffect(() => {
   console.log('effect')
   axios
-    .get('https://3001-rose-goat-sq5cvnkf.ws-us03.gitpod.io/persons') // gitpod.io
+    .get('http://localhost:3001/persons')
     .then(response => {
       console.log('promise fulfilled', response)
       setPersons(response.data)
