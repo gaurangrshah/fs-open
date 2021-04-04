@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from 'react'
-
-const INITIAL_STATE = [
-  { name: 'Arto Hellas', number: '040-123456' },
-  { name: 'Ada Lovelace', number: '39-44-5323523' },
-  { name: 'Dan Abramov', number: '12-43-234345' },
-  { name: 'Mary Poppendieck', number: '39-23-6423122' }
-];
-
+import axios from "axios"
 
 const Filter = ({ handleSearch }) => {
 
@@ -37,12 +30,12 @@ const PersonForm = ({ handleSubmit, newName, handleNameChange, newPhone, handleP
 const Persons = ({ persons, filterPerson }) => {
   const renderPerson = (person) => <p key={person.name}>{person.name} {person.number}</p>
   const filteredPersons = [...persons?.filter(filterPerson)].map(renderPerson)
-  return filteredPersons?.length && filteredPersons
+  return filteredPersons?.length ? filteredPersons : "Loading..."
 }
 
 
 const App = () => {
-  const [persons, setPersons] = useState(INITIAL_STATE);
+  const [persons, setPersons] = useState([]);
 
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
@@ -54,6 +47,16 @@ const App = () => {
   const handleSearch = (e) => setQuery(e?.target?.value.toLowerCase())
 
   const checkPerson = (person) => person?.name?.toLowerCase().includes(query)
+
+  useEffect(() => {
+  console.log('effect')
+  axios
+    .get('https://3001-rose-goat-sq5cvnkf.ws-us03.gitpod.io/persons') // gitpod.io
+    .then(response => {
+      console.log('promise fulfilled', response)
+      setPersons(response.data)
+    })
+}, [])
 
   const handleSubmit = (e) => {
     e.preventDefault();
