@@ -1,10 +1,18 @@
 import React, { useEffect, useState } from 'react'
 
+const INITIAL_STATE = [
+  { name: 'Arto Hellas', number: '040-123456' },
+  { name: 'Ada Lovelace', number: '39-44-5323523' },
+  { name: 'Dan Abramov', number: '12-43-234345' },
+  { name: 'Mary Poppendieck', number: '39-23-6423122' }
+];
 
-const Filter = ({ filterPersons }) => {
+
+const Filter = ({ handleSearch }) => {
+
   return (
     <>
-      filter shown with <input type="search" onChange={filterPersons} />
+      filter shown with <input type="search" onChange={handleSearch} />
     </>
   )
 }
@@ -26,42 +34,40 @@ const PersonForm = ({ handleSubmit, newName, handleNameChange, newPhone, handleP
   )
 }
 
-const Persons = ({ persons, filteredPersons }) => {
-  return filteredPersons?.length && filteredPersons?.map(person => <p key={person.name}>{person.name} {person.number}</p>)
+const Persons = ({ persons, filterPerson }) => {
+  const renderPerson = (person) => <p key={person.name}>{person.name} {person.number}</p>
+  const filteredPersons = [...persons?.filter(filterPerson)].map(renderPerson)
+  return filteredPersons?.length && filteredPersons
 }
 
+
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '040-123456' },
-    { name: 'Ada Lovelace', number: '39-44-5323523' },
-    { name: 'Dan Abramov', number: '12-43-234345' },
-    { name: 'Mary Poppendieck', number: '39-23-6423122' }
-  ]);
+  const [persons, setPersons] = useState(INITIAL_STATE);
 
   const [newName, setNewName] = useState('');
   const [newPhone, setNewPhone] = useState('');
-  const [filteredPersons, setFilteredPersons] = useState(persons)
+  const [query, setQuery] = useState('')
 
-  useEffect(() => {
-    if(JSON.stringify(persons) === JSON.stringify(filterPersons)) return
-    setFilteredPersons(persons)
-  }, [persons])
 
   const handleNameChange = (e) => setNewName(e.target.value);
   const handlePhoneChange = (e) => setNewPhone(e.target.value);
+  const handleSearch = (e) => setQuery(e?.target?.value.toLowerCase())
+
+  const checkPerson = (person) => person?.name?.toLowerCase().includes(query)
 
   const handleSubmit = (e) => {
     e.preventDefault();
     e.persist();
 
 
-    const exists = persons.find(person => person.name.toLowerCase() === newName.toLowerCase());
+    const exists = persons?.find(person => person?.name?.toLowerCase() === newName?.toLowerCase());
 
     if (exists) {
       return alert(`The entry ${newName} already exists in the phonebook.`);
     }
-    const inputs = [...e.target.querySelectorAll('input')].reduce(
-      (obj, item) => ({ ...obj, [item.name]: item.value.trim() }), // trim whitespace
+
+    const inputs = [...e?.target?.querySelectorAll('input')].reduce(
+      (obj, item) => ({ ...obj, [item?.name]: item?.value.trim() }), // trim whitespace
       {}
     )
 
@@ -70,20 +76,13 @@ const App = () => {
     setNewPhone('');
   };
 
-  const filterPersons = (e) => {
-    e.preventDefault()
-    e.persist()
-    const filtered = persons.filter(person => person.name.toLowerCase().includes(e.target.value.toLowerCase()))
-    return setFilteredPersons(filtered)
-  }
-
   return (
     <div>
       <h2>Phonebook</h2>
-      <Filter filterPersons={filterPersons} />
+      <Filter handleSearch={handleSearch} />
       <PersonForm handleSubmit={handleSubmit} newName={newName} newPhone={newPhone} handleNameChange={handleNameChange} handlePhoneChange={handlePhoneChange} />
       <h2>Numbers</h2>
-      <Persons filteredPersons={filteredPersons} />
+      <Persons persons={persons} filterPerson={checkPerson}/>
     </div>
   )
 }
