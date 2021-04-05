@@ -1,67 +1,9 @@
 import React, { useEffect, useState } from "react";
+
+import Filter from "./components/Filter";
+import PersonForm from "./components/PersonForm";
+import Persons from "./components/Persons";
 import personService from "./services/persons";
-
-const Filter = ({ handleSearch }) => {
-  return (
-    <>
-      filter shown with <input type='search' onChange={handleSearch} />
-    </>
-  );
-};
-
-const PersonForm = ({
-  handleSubmit,
-  newName,
-  handleNameChange,
-  newPhone,
-  handlePhoneChange,
-}) => {
-  return (
-    <form onSubmit={handleSubmit}>
-      <h2>add a new</h2>
-      <div>
-        name:{" "}
-        <input
-          type='text'
-          name='name'
-          value={newName}
-          onChange={handleNameChange}
-        />
-      </div>
-      <div>
-        phone:{" "}
-        <input
-          type='tel'
-          name='number'
-          value={newPhone}
-          onChange={handlePhoneChange}
-        />
-      </div>
-      <div>
-        <button type='submit'>add</button>
-      </div>
-    </form>
-  );
-};
-
-const Persons = ({ filter, persons, filterPerson, handleDelete }) => {
-  const renderPerson = (person) => (
-    <>
-      <p key={person.name + person.id}>
-        {person.name} {person.number}
-      </p>
-      <span>
-        <button onClick={() => handleDelete(person.id)}>Delete</button>
-      </span>
-    </>
-  );
-  const filteredPersons = [...persons?.filter(filterPerson)].map(renderPerson);
-  return filteredPersons?.length
-    ? filteredPersons
-    : filter
-    ? "No Results"
-    : "Loading...";
-};
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -103,10 +45,13 @@ const App = () => {
         )
       ) {
         personService.update(exists?.id, inputs).then((response) => {
-          const newPersons = persons.filter(
-            (person) => person?.id !== exists?.id
-          );
-          setPersons([...newPersons, response]);
+          const newPersons = persons.map((person) => {
+            if (person?.id === exists?.id) {
+              person = response;
+            }
+            return person;
+          });
+          setPersons(newPersons);
         });
       }
     }
