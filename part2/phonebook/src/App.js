@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import Filter from "./components/Filter";
 import PersonForm from "./components/PersonForm";
 import Persons from "./components/Persons";
+import Notification from "./components/Notification";
 import personService from "./services/persons";
 
 const App = () => {
@@ -11,6 +12,7 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhone, setNewPhone] = useState("");
   const [filter, setFilter] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const handleNameChange = (e) => setNewName(e.target.value);
   const handlePhoneChange = (e) => setNewPhone(e.target.value);
@@ -18,11 +20,29 @@ const App = () => {
 
   const checkPerson = (person) => person?.name?.toLowerCase().includes(filter);
 
+  function displayNotification(message) {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+  }
+
   useEffect(() => {
-    personService.getAll().then((response) => {
-      console.log("promise fulfilled", response);
-      setPersons(response);
-    });
+    personService
+      .getAll()
+      .then((response) => {
+        setPersons(response);
+        displayNotification(`success: all persons have been loaded`);
+      })
+      .catch((error) => {
+        displayNotification(
+          `error: persons could not be loaded ${error && JSON.stringify(error)}`
+        );
+      });
+  }, []);
+
+  useEffect(() => {
+    displayNotification(`success: testing`);
   }, []);
 
   const handleSubmit = (e) => {
@@ -44,21 +64,39 @@ const App = () => {
           `${exists?.name} already exists, would you like to update the phone number?`
         )
       ) {
-        personService.update(exists?.id, inputs).then((response) => {
-          const newPersons = persons.map((person) => {
-            if (person?.id === exists?.id) {
-              person = response;
-            }
-            return person;
+        personService
+          .update(exists?.id, inputs)
+          .then((response) => {
+            const newPersons = persons.filter((person) => {
+              return person?.id !== exists?.id;
+            });
+            setPersons([...newPersons, response]);
+            displayNotification(`success: updated record for ${exists.name}`);
+          })
+          .catch((error) => {
+            displayNotification(
+              `error: person ${exists.name} could not be updated ${
+                error && JSON.stringify(error)
+              }`
+            );
           });
-          setPersons(newPersons);
-        });
       }
+      return;
     }
 
     personService
       .create(inputs)
-      .then((response) => setPersons((prevState) => [...prevState, response]));
+      .then((response) => {
+        setPersons(persons.concat(response));
+        displayNotification(`success: ${response.name} created`);
+      })
+      .catch((error) => {
+        displayNotification(
+          `error: person ${inputs.name} could not be created ${
+            error && JSON.stringify(error)
+          }`
+        );
+      });
 
     setNewName("");
     setNewPhone("");
@@ -71,15 +109,24 @@ const App = () => {
     ) {
       personService
         .remove(id)
-        .then((response) =>
-          setPersons(persons.filter((person) => person?.id !== id))
-        );
+        .then((response) => {
+          setPersons(persons.filter((person) => person?.id !== id));
+          displayNotification(`success: person with id: ${id} deleted`);
+        })
+        .catch((error) => {
+          displayNotification(
+            `error: person ${personToRemove.name} could not be deleted ${
+              error && JSON.stringify(error)
+            }`
+          );
+        });
     }
   };
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <Filter handleSearch={handleSearch} />
       <PersonForm
         handleSubmit={handleSubmit}

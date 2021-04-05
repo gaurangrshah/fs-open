@@ -24,6 +24,7 @@ const PersonForm = ({
           name='number'
           value={newPhone}
           onChange={handlePhoneChange}
+          required
         />
       </div>
       <div>
