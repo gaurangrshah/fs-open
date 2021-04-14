@@ -1,8 +1,12 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const morgan = require("morgan");
+
 const app = express();
 
 app.use(bodyParser.json());
+// app.use(morgan("tiny"));
+
 let phonebook = [
   {
     id: 1,
@@ -25,6 +29,18 @@ let phonebook = [
     number: "39-23-6423122",
   },
 ];
+
+morgan.token("body", (req) => {
+  if (req.method === "POST") {
+    return ` ${JSON.stringify(req.body)}`;
+  } else {
+    return "";
+  }
+});
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
 
 const generateId = () => {
   const maxId =
