@@ -74,6 +74,7 @@ const App = () => {
             displayNotification(`success: updated record for ${exists.name}`);
           })
           .catch((error) => {
+            console.error(error);
             displayNotification(
               `error: person ${exists.name} could not be updated ${
                 error && JSON.stringify(error)

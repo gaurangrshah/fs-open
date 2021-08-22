@@ -53,6 +53,11 @@ const generateId = () => {
   return maxId + 1;
 };
 
+app.get("/", (req, res) => {
+  console.log("testing");
+  res.send("<h1>Phonebook</h1>");
+});
+
 app.get("/api/persons", (req, res) => {
   Person.find({}).then((person) => res.json(person));
 });
@@ -77,18 +82,20 @@ app.delete("/api/persons/:id", (req, res, next) => {
     .catch(next);
 });
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
-  if (!body) {
+  if (!body.name || !body.number) {
     return res.status(400).json({ error: "content missing" });
   }
 
   const person = new Person(req.body);
 
-  person.save().then((savedPerson) => {
-    res.json(savedPerson);
-  });
+  person
+    .save()
+    .then((savedPerson) => savedPerson.toJSON())
+    .then((savedAndFormattedPerson) => res.json(savedAndFormattedPerson))
+    .catch(next);
 });
 
 app.get("/info", (req, res, next) => {
@@ -103,8 +110,10 @@ app.get("/info", (req, res, next) => {
 
 app.put("/api/persons/:id", (req, res, next) => {
   const body = req.body;
-  // new - returns the updated user wiht the new values
-  Person.findByIdAndUpdate(req.params.id, body, { new: true })
+  // adds validation to update queries and sets the `this` w/ context based on query
+  // new - returns the updated user w/ the updated values
+  const opts = { new: true, runValidators: true, context: "query" };
+  Person.findByIdAndUpdate(req.params.id, body, opts)
     .then((updatedPerson) => {
       res.json(updatedPerson);
     })
@@ -123,6 +132,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    // handles all validation errors (eg. missing required fields)
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
