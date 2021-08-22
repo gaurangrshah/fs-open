@@ -1,14 +1,16 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
 const cors = require("cors");
+const Person = require("./models/person");
 
 const app = express();
 
-app.use(bodyParser.json());
-// app.use(morgan("tiny"));
+app.use(express.static("build")); // serves up static routes from /build
+// app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors());
-app.use(express.static("build")); //
 
 let phonebook = [
   {
@@ -51,65 +53,83 @@ const generateId = () => {
   return maxId + 1;
 };
 
-app.get("/", (req, res) => {
-  res.send("<h1>Phonebook</h1>");
-});
-
 app.get("/api/persons", (req, res) => {
-  res.json(phonebook);
+  Person.find({}).then((person) => res.json(person));
 });
 
-app.get("/api/persons/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const person = phonebook.find((contact) => contact.id === id);
-  if (person) {
-    res.json(person);
-  } else {
-    return res.status(404).end();
-  }
+app.get("/api/persons/:id", (req, res, next) => {
+  Person.findById(req.params.id)
+    .then((person) => {
+      if (person) {
+        res.json(person);
+      } else {
+        res.status(404).end();
+      }
+    })
+    .catch(next);
 });
 
-app.delete("/api/persons/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const filteredPersons = phonebook.filter((contact) => contact.id !== id);
-  res.status(204).end();
+app.delete("/api/persons/:id", (req, res, next) => {
+  Person.findByIdAndRemove(req.params.id)
+    .then((person) => {
+      res.status(204).end();
+    })
+    .catch(next);
 });
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
-  if (!body.name || !body.number) {
-    return res.status(400).json({
-      error: "content missing",
-    });
+  if (!body) {
+    return res.status(400).json({ error: "content missing" });
   }
 
-  if (
-    phonebook.find(
-      (person) => person.name.toLowerCase() === body.name.toLowerCase()
-    )
-  ) {
-    return res.status(422).json({
-      error: "name must be unique",
-    });
+  const person = new Person(req.body);
+
+  person.save().then((savedPerson) => {
+    res.json(savedPerson);
+  });
+});
+
+app.get("/info", (req, res, next) => {
+  Person.find({})
+    .then((persons) => {
+      const len = persons.length;
+      const date = new Date();
+      res.send(`Phonebook has info for ${len} people<br>${date}`);
+    })
+    .catch(next);
+});
+
+app.put("/api/persons/:id", (req, res, next) => {
+  const body = req.body;
+  // new - returns the updated user wiht the new values
+  Person.findByIdAndUpdate(req.params.id, body, { new: true })
+    .then((updatedPerson) => {
+      res.json(updatedPerson);
+    })
+    .catch(next);
+});
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error("message:", error.message);
+
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
   }
-  const person = {
-    id: generateId(),
-    date: new Date(),
-    name: body.name,
-    number: body.number,
-  };
 
-  phonebook = phonebook.concat(person);
+  next(error);
+};
 
-  res.json(person);
-});
-
-app.get("/info", (req, res) => {
-  const len = phonebook.length;
-  var date = new Date();
-  res.send(`Phonebook has info for ${len} people<br>${date}`);
-});
+// this has to be the last loaded middleware.
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3001; // allows heroku to set the port
 app.listen(PORT, () => {
