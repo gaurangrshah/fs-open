@@ -2,23 +2,16 @@ const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
 const { errorHandler } = require("../utils/middleware");
 
-blogRouter.get("/", (request, response) => {
-  Blog.find({})
-    .then((blog) => {
-      response.json(blog);
-    })
-    .catch(errorHandler);
+blogRouter.get("/", async (request, response) => {
+  const blog = await Blog.find({});
+  response.json(blog);
 });
 
-blogRouter.post("/", (request, response) => {
+blogRouter.post("/", async (request, response) => {
   const blog = new Blog(request.body);
 
-  blog
-    .save()
-    .then((result) => {
-      response.status(201).json(result);
-    })
-    .catch(errorHandler);
+  await blog.save();
+  response.status(201).json(result);
 });
 
 module.exports = blogRouter;
