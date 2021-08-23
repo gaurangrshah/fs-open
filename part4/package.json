@@ -9,9 +9,6 @@
     "test": "cross-env NODE_ENV=test jest --watch --runInBand",
     "lint": "eslint ."
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
