@@ -32,9 +32,9 @@ app.use(express.json());
 app.use(middleware.requestLogger);
 app.use(middleware.tokenExtractor);
 app.use(middleware.userExtractor);
-app.use("/api/blog", blogRouter);
+app.use("/api/blogs", blogRouter);
 app.use("/api/users", userRouter);
-app.use("/login", loginRouter);
+app.use("/api/login", loginRouter);
 
 app.use(middleware.unknownEndpoint);
 app.use(middleware.errorHandler);

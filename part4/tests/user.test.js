@@ -66,7 +66,7 @@ describe("user authentication", () => {
 
   test("should not accept short password", async () => {
     const response = await api
-      .post("/login")
+      .post("/api/login")
       .send({ ...initialUser, password: shortPassword })
       .expect(400);
 
@@ -75,7 +75,7 @@ describe("user authentication", () => {
 
   test("username should be valid length", async () => {
     const response = await api
-      .post("/login")
+      .post("/api/login")
       .send({ ...initialUser, username: "yo" })
       .expect(400);
 

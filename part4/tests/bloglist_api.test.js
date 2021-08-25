@@ -73,18 +73,18 @@ afterEach(async () => {
 describe("when there is initially some notes saved", () => {
   test("bloglist are returned as json", async () => {
     await api
-      .get("/api/blog")
+      .get("/api/blogs")
       .expect(200)
       .expect("Content-Type", /application\/json/);
   });
 
   test("bloglist contains the correct amount of posts", async () => {
-    const response = await api.get("/api/blog").expect(200);
+    const response = await api.get("/api/blogs").expect(200);
     expect(response.body).toHaveLength(blogAtStart.length);
   });
 
   test("unique identifier is named 'id'", async () => {
-    const response = await api.get("/api/blog");
+    const response = await api.get("/api/blogs");
     expect(response.body[0].id).toBeDefined();
   });
 });
@@ -98,7 +98,7 @@ describe("addition of a new blog entry", () => {
       url: "https://example.com/",
     };
     const response = await api
-      .post("/api/blog")
+      .post("/api/blogs")
       .set(headers)
       .send(newBlog)
       .expect(201)
@@ -118,7 +118,7 @@ describe("addition of a new blog entry", () => {
     };
 
     const response = await api
-      .post("/api/blog")
+      .post("/api/blogs")
       .send(newBlog)
       .set("Authorization", `bearer ${rootToken}`)
       .expect(201)
@@ -135,7 +135,7 @@ describe("addition of a new blog entry", () => {
       url: "https://example.com/",
     };
     await api
-      .post("/api/blog")
+      .post("/api/blogs")
       .send(newBlog)
       .expect(401)
       .expect("Content-Type", /application\/json/);
@@ -148,7 +148,7 @@ describe("addition of a new blog entry", () => {
       url: "https://example.com/",
     };
     await api
-      .post("/api/blog")
+      .post("/api/blogs")
       .set("Authorization", `bearer ${rootToken}`)
       .send(newBlog)
       .expect(400)
@@ -162,7 +162,7 @@ describe("addition of a new blog entry", () => {
       author: "Some Guy",
     };
     await api
-      .post("/api/blog")
+      .post("/api/blogs")
       .set("Authorization", `bearer ${rootToken}`)
       .send(newBlog)
       .expect(400)
@@ -173,7 +173,7 @@ describe("addition of a new blog entry", () => {
 describe("updating a blog entry", () => {
   test("fails with 400 when user is unauthorized", async () => {
     await api
-      .put(`/api/blog/${selected.id}`)
+      .put(`/api/blogs/${selected.id}`)
       .send({ ...selected, title: "testing an update failure" })
       .expect(400)
       .expect("Content-Type", /application\/json/);
@@ -184,7 +184,7 @@ describe("updating a blog entry", () => {
     expect(selected.likes).toBe(3);
 
     await api
-      .put(`/api/blog/${updatedLike.id}`)
+      .put(`/api/blogs/${updatedLike.id}`)
       .set("Authorization", `bearer ${rootToken}`)
       .send(updatedLike)
       .expect(200)
@@ -198,7 +198,7 @@ describe("updating a blog entry", () => {
 describe("deleting a blog entry", () => {
   test("succeeds with 204 if user is authorized", async () => {
     await api
-      .delete(`/api/blog/${selected.id}`)
+      .delete(`/api/blogs/${selected.id}`)
       .set("Authorization", `bearer ${rootToken}`)
       .expect(204);
 
@@ -208,7 +208,7 @@ describe("deleting a blog entry", () => {
 
   test("should not delete when user is not owner", async () => {
     await api
-      .delete(`/api/blog/${selected.id}`)
+      .delete(`/api/blogs/${selected.id}`)
       .set("Authorization", `bearer ${fakeToken}`)
       .expect(401);
 
