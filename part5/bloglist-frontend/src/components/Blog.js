@@ -27,10 +27,10 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
   };
 
   return (
-    <div style={{ display: "flex", flexDirection: "column" }}>
+    <li style={{ display: "flex", flexDirection: "column" }}>
       <div style={blogStyle}>
         <div>
-          {blog.title} {blog.author}
+          {blog.title} - {blog.author}
           <span>
             <button onClick={toggleVisibility}>
               {visible ? "cancel" : "view"}
@@ -42,7 +42,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
             <p>
               likes: {blog.likes}{" "}
               <span>
-                <button onClick={() => handleLike(blog)}>like</button>
+                <button onClick={() => handleLike(blog)}> Add like</button>
               </span>
             </p>
           </div>
@@ -52,7 +52,7 @@ const Blog = ({ blog, handleLike, handleDelete }) => {
           </button>
         </div>
       </div>
-    </div>
+    </li>
   );
 };
 
