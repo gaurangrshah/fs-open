@@ -1,20 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
+import Togglable from "./components/Togglable";
 import BlogForm from "./components/BlogForm";
+import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
-import loginService from "./services/login";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
+
+  const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -29,25 +27,24 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    try {
-      const user = await loginService.login({
-        username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+  const handleLoginSuccess = async (user) => {
+    blogService.setToken(user.token);
+    setUser(user);
+    handleSuccess(`${user.name} logged in`);
+  };
 
-      blogService.setToken(user.token);
-      setUser(user);
-      setUsername("");
-      setPassword("");
-    } catch (exception) {
-      setErrorMessage("Wrong credentials");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-    }
+  const handleError = (message) => {
+    setErrorMessage(message);
+    setTimeout(() => {
+      setErrorMessage(null);
+    }, 5000);
+  };
+
+  const handleSuccess = (message) => {
+    setSuccessMessage(message);
+    setTimeout(() => {
+      setSuccessMessage(null);
+    }, 5000);
   };
 
   const handleLogout = () => {
@@ -55,33 +52,25 @@ const App = () => {
     setUser(null);
   };
 
-  const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-        <input
-          type='text'
-          value={username}
-          name='Username'
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-        <input
-          type='password'
-          value={password}
-          name='Password'
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type='submit'>login</button>
-    </form>
-  );
+  const handleLike = async (blog) => {
+    blog.user = blog.user.id; // replace user details with user.id
+    const likedBlog = { ...blog, likes: blog.likes + 1 };
+    try {
+      await blogService.update(blog.id, likedBlog);
+      setBlogs(blogs.map((b) => (b.id !== blog.id ? b : likedBlog)));
+      setSuccessMessage(`Liked ${blog.title} by: ${blog.author}`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+    } catch (exception) {
+      setErrorMessage("Invalid blog");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
 
-  const onBlogCreate = async (event) => {
-    event.preventDefault();
-
+  const handleCreate = async ({ title, author, url }) => {
     if (!user) {
       setErrorMessage("You need to log in first!");
       setTimeout(() => {
@@ -89,7 +78,6 @@ const App = () => {
       }, 5000);
       return;
     }
-
     if (!title || !url) {
       setErrorMessage("Please fill in all fields");
       setTimeout(() => {
@@ -103,6 +91,7 @@ const App = () => {
         author: author || user.name,
         url,
       });
+      blogFormRef.current.toggleVisibility();
       setBlogs(blogs.concat(newBlog));
       setSuccessMessage(
         `New blog: ${newBlog.title} by: ${newBlog.author} added`
@@ -110,15 +99,45 @@ const App = () => {
       setTimeout(() => {
         setSuccessMessage(null);
       }, 5000);
-      setTitle("");
-      setAuthor("");
-      setUrl("");
+    } catch (exception) {
+      console.error("🚀 | file: App.js | exception", exception);
+      setErrorMessage("Invalid blog");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!user) {
+      setErrorMessage("You need to log in first!");
+      setTimeout(() => {
+        setErrorMessage(null);
+      }, 5000);
+      return;
+    }
+
+    try {
+      await blogService.remove(id);
+      setBlogs(blogs.filter((b) => b.id !== id));
+      setSuccessMessage(`Deleted blog: ${id}`);
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     } catch (exception) {
       setErrorMessage("Invalid blog");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
     }
+  };
+
+  const loginForm = () => {
+    return (
+      <Togglable buttonLabel='login'>
+        <LoginForm {...{ handleError, handleSubmit: handleLoginSuccess }} />
+      </Togglable>
+    );
   };
 
   return (
@@ -138,20 +157,21 @@ const App = () => {
               <button onClick={handleLogout}>Logout</button>
             </span>{" "}
           </div>
-          {blogs.map((blog) => (
-            <Blog key={blog.id} blog={blog} />
-          ))}
-          <BlogForm
-            {...{
-              title,
-              setTitle,
-              author,
-              setAuthor,
-              url,
-              setUrl,
-              onSubmit: onBlogCreate,
-            }}
-          />
+          {blogs
+            .sort((a, b) => b.likes - a.likes)
+            .map((blog) => (
+              <Blog key={blog.id} {...{ blog, handleLike, handleDelete }} />
+            ))}
+          <Togglable buttonLabel='create new blog' ref={blogFormRef}>
+            <BlogForm
+              {...{
+                user,
+                setErrorMessage,
+                setSuccessMessage,
+                handleCreate,
+              }}
+            />
+          </Togglable>
         </>
       )}
     </>

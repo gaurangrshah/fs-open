@@ -21,10 +21,24 @@ const create = async (newObject) => {
   return response.data;
 };
 const update = (id, newObject) => {
-  const request = axios.put(`${baseUrl} /${id}`, newObject);
+  console.log("🚀 | file: blogs.js | line 24 | id, newObject", id, newObject);
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
   return request.then((response) => response.data);
 };
 
-const blogService = { getAll, create, update, setToken };
+const remove = (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const request = axios.delete(`${baseUrl}/${id}`, config);
+  return request.then((response) => response.data);
+};
+
+const blogService = { getAll, create, update, remove, setToken };
 
 export default blogService;
