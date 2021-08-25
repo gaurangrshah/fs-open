@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 const Blog = ({ blog, handleLike, handleDelete }) => {
   const [visible, setVisible] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
 
   const showWhenVisible = {
     display: visible ? "block" : "none",
