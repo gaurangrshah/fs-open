@@ -33,4 +33,7 @@ Togglable.propTypes = {
   buttonLabel: PropTypes.string.isRequired,
 };
 
+// required by es-lint because fwdRef creates an anonymous fn
+Togglable.displayName = "Togglable";
+
 export default Togglable;

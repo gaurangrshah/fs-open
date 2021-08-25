@@ -14,8 +14,8 @@ const Notification = ({ type = "error", message }) => {
           type === "error"
             ? "2px solid red"
             : type === "success"
-            ? "2px solid green"
-            : "2px solid yellow",
+              ? "2px solid green"
+              : "2px solid yellow",
         color:
           type === "error" ? "red" : type === "success" ? "green" : "yellow",
         width: "100%",

@@ -14,7 +14,7 @@ const LoginForm = ({ handleSubmit, handleError }) => {
         username,
         password,
       });
-      console.log("🚀 | file: LoginForm.js | line 19 | user", user);
+
 
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
 
@@ -55,10 +55,7 @@ const LoginForm = ({ handleSubmit, handleError }) => {
 
 LoginForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  handleUsernameChange: PropTypes.func.isRequired,
-  handlePasswordChange: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
+  handleError: PropTypes.func.isRequired,
 };
 
 export default LoginForm;
