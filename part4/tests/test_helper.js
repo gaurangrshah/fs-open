@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 
@@ -67,9 +68,14 @@ const usersInDb = async () => {
   return users.map((u) => u.toJSON());
 };
 
+const getHashedPw = async (password) => {
+  return bcrypt.hash(password, 10);
+};
+
 module.exports = {
   initialBlogList,
   nonExistingId,
   blogsInDb,
   usersInDb,
+  getHashedPw,
 };

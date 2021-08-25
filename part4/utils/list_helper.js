@@ -4,9 +4,6 @@ const dummy = (blogs) => {
 
 const totalLikes = (blogs) => {
   let likes = blogs.map((post) => post.likes);
-  // if (likes.length === 0) {
-  //   likes = [0];
-  // }
   return likes.reduce((total, curr) => total + curr, 0);
 };
 

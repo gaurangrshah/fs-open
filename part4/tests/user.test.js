@@ -5,36 +5,41 @@ const app = require("../app");
 const User = require("../models/user");
 const helper = require("./test_helper");
 const api = supertest(app);
+const config = require("../utils/config");
 
 const initialUser = {
-  notes: [],
   username: "test",
   name: "Testuser",
-  password: "!Salainen2",
+  password: "sekured",
 };
 
-describe("when there is initially one user in db", () => {
+const shortPassword = "ww";
+
+describe("user authentication", () => {
   beforeEach(async () => {
     await User.deleteMany({});
 
-    const passwordHash = await bcrypt.hash("sekret", 10);
+    const passwordHash = await bcrypt.hash(config.SECRET, 10);
     const user = new User({ username: "root", passwordHash });
-
     await user.save();
+  });
+
+  afterEach(async () => {
+    await User.deleteMany({});
   });
 
   test("creation succeeds with a fresh username", async () => {
     const usersAtStart = await helper.usersInDb();
 
-    const newUser = {
-      username: "mluukkai",
-      name: "Matti Luukkainen",
-      password: "salainen",
+    const freshUser = {
+      username: "steve",
+      name: "steven",
+      password: "sinceyouknow",
     };
 
     await api
       .post("/api/users")
-      .send(newUser)
+      .send(freshUser)
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
@@ -42,6 +47,42 @@ describe("when there is initially one user in db", () => {
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
     const usernames = usersAtEnd.map((u) => u.username);
-    expect(usernames).toContain(newUser.username);
+    expect(usernames).toContain(freshUser.username);
   });
+});
+
+describe("user authentication", () => {
+  beforeEach(async () => {
+    await User.deleteMany({});
+
+    const passwordHash = await bcrypt.hash(config.SECRET, 10);
+    const user = new User({ username: "root", passwordHash });
+    await user.save();
+  });
+
+  afterEach(async () => {
+    await User.deleteMany({});
+  });
+
+  test("should not accept short password", async () => {
+    const response = await api
+      .post("/login")
+      .send({ ...initialUser, password: shortPassword })
+      .expect(400);
+
+    expect(response.body.error).toBe("invalid password");
+  });
+
+  test("username should be valid length", async () => {
+    const response = await api
+      .post("/login")
+      .send({ ...initialUser, username: "yo" })
+      .expect(400);
+
+    expect(response.body.error).toBe("invalid username");
+  });
+});
+
+afterAll(() => {
+  mongoose.connection.close();
 });

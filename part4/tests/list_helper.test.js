@@ -1,3 +1,4 @@
+const Mongoose = require("mongoose");
 const listHelper = require("../utils/list_helper");
 
 const listWithOneBlog = [
@@ -135,7 +136,6 @@ describe("mostBlogs", () => {
   });
 });
 
-
 describe("mostLikes", () => {
   test("an empty list is null", () => {
     expect(listHelper.mostLikes([])).toBe(null);
@@ -146,4 +146,8 @@ describe("mostLikes", () => {
       likes: 17,
     });
   });
+});
+
+afterAll(() => {
+  Mongoose.connection.close();
 });

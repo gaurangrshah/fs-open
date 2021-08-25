@@ -15,6 +15,15 @@ usersRouter.get("/", async (request, response) => {
 });
 
 usersRouter.post("/", async (request, response) => {
+  if (
+    !request.body?.username?.length > 2 ||
+    !request.body?.password?.length > 2
+  ) {
+    return response
+      .status(400)
+      .json({ error: "valid username and password required" });
+  }
+
   const body = request.body;
 
   const saltRounds = 10;
