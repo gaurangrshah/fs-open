@@ -70,24 +70,6 @@ describe("Bloglist app", function () {
 
     describe("when logged in", function () {
       beforeEach(function () {
-        // // ui login flow
-        // cy.contains("log in").click();
-        // cy.get("input:first").type("root");
-        // cy.get("input:last").type("salainen");
-        // cy.get("#login-button").click();
-
-        // // directly login to the server, bypass ui login flow
-        // cy.request("POST", "http://localhost:3000/api/login", {
-        //   username: "root",
-        //   password: "salainen",
-        // }).then((response) => {
-        //   localStorage.setItem(
-        //     "loggedBlogappUser",
-        //     JSON.stringify(response.body)
-        //   );
-        //   cy.visit("http://localhost:3000");
-        // });
-
         // custom login via cypress commands --see: cypress/support/commands
         cy.login({ username: "root", password: "salainen" });
       });
