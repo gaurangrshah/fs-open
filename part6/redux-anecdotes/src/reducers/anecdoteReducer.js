@@ -40,17 +40,19 @@ const reducer = (state = initialState, action) => {
 };
 
 export const createAnecdote = (anecdote) => {
-  return {
-    type: "ADD_ANECDOTE",
-    content: anecdote,
-  };
+  return async (dispatch) =>
+    dispatch({
+      type: "ADD_ANECDOTE",
+      content: anecdote,
+    });
 };
 
 export const vote = (id) => {
-  return {
-    type: "VOTE",
-    id,
-  };
+  return async (dispatch) =>
+    dispatch({
+      type: "VOTE",
+      id,
+    });
 };
 
 export default reducer;

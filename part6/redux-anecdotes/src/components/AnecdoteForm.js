@@ -1,5 +1,6 @@
 import React from "react";
 import { createAnecdote } from "../reducers/anecdoteReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
 function AnecdoteForm({ dispatch }) {
   const addAnecdote = (e) => {
@@ -8,6 +9,7 @@ function AnecdoteForm({ dispatch }) {
     const content = e.target.querySelector("input").value;
     e.target.querySelector("input").value = "";
     dispatch(createAnecdote(content));
+    dispatch(setNotification(`New anecdote '${content}' successfully added`));
   };
   return (
     <>
