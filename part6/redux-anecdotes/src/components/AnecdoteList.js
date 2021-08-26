@@ -3,6 +3,7 @@ import { vote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
 
 function AnecdoteList({ anecdotes = [], dispatch }) {
+  console.log("🚀 | file: AnecdoteList.js | line 6 | anecdotes", anecdotes);
   const handleVote = (id) => {
     dispatch(vote(id));
     dispatch(

@@ -8,20 +8,17 @@ import anecdotesService from "./services/anecdotes";
 import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
 const App = () => {
-
   const dispatch = useDispatch();
 
   const anecdotes = useSelector(({ filter, anecdotes }) => {
     const regex = new RegExp(filter, "i");
-    return filter
+    return filter?.length
       ? anecdotes.filter((anecdote) => anecdote.content.match(regex))
       : anecdotes;
   });
 
   useEffect(() => {
-    anecdotesService
-      .getAll()
-      .then((anecdotes) => dispatch(initializeAnecdotes(anecdotes)));
+    dispatch(initializeAnecdotes());
   }, [dispatch]);
 
   return (

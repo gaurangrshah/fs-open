@@ -1,7 +1,7 @@
 import React from "react";
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
-import anecdotesService from "../services/anecdotes";
+// import anecdotesService from "../services/anecdotes";
 
 function AnecdoteForm({ dispatch }) {
   const addAnecdote = async (e) => {
@@ -9,8 +9,8 @@ function AnecdoteForm({ dispatch }) {
 
     const content = e.target.querySelector("input").value;
     e.target.querySelector("input").value = "";
-    const newAnecdote = await anecdotesService.createNew(content);
-    dispatch(createAnecdote(newAnecdote));
+    // const newAnecdote = await anecdotesService.createNew(content);
+    dispatch(createAnecdote(content));
     dispatch(setNotification(`New anecdote '${content}' successfully added`));
   };
   return (
