@@ -3,12 +3,13 @@ import { vote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
 
 function AnecdoteList({ anecdotes = [], dispatch }) {
-  console.log("🚀 | file: AnecdoteList.js | line 6 | anecdotes", anecdotes);
-  const handleVote = (id) => {
-    dispatch(vote(id));
+  const handleVote = (anecdote) => {
+    dispatch(vote(anecdote));
     dispatch(
       setNotification(
-        `You voted for '${anecdotes.find((a) => a.id === id).content}'`,
+        `You voted for '${
+          anecdotes.find((a) => a.id === anecdote.id).content
+        }'`,
         5
       )
     );
@@ -21,7 +22,7 @@ function AnecdoteList({ anecdotes = [], dispatch }) {
           <div>{anecdote.content}</div>
           <div>
             has {anecdote.votes}
-            <button onClick={() => handleVote(anecdote.id)}>vote</button>
+            <button onClick={() => handleVote(anecdote)}>vote</button>
           </div>
         </div>
       ))}
