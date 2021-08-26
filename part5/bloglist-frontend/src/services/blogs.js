@@ -21,7 +21,6 @@ const create = async (newObject) => {
   return response.data;
 };
 const update = (id, newObject) => {
-  console.log("🚀 | file: blogs.js | line 24 | id, newObject", id, newObject);
   const config = {
     headers: { Authorization: token },
   };

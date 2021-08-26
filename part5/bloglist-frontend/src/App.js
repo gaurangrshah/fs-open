@@ -134,7 +134,7 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <Togglable buttonLabel='login'>
+      <Togglable buttonLabel='log in'>
         <LoginForm {...{ handleError, handleSubmit: handleLoginSuccess }} />
       </Togglable>
     );

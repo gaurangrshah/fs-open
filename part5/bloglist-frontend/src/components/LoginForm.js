@@ -15,7 +15,6 @@ const LoginForm = ({ handleSubmit, handleError }) => {
         password,
       });
 
-
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
 
       handleSubmit(user);
@@ -35,6 +34,8 @@ const LoginForm = ({ handleSubmit, handleError }) => {
         <div>
           username
           <input
+            id='username'
+            name='username'
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
@@ -42,12 +43,16 @@ const LoginForm = ({ handleSubmit, handleError }) => {
         <div>
           password
           <input
+            id='password'
+            name='password'
             type='password'
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button type='submit'>login</button>
+        <button id='login-button' type='submit'>
+          log in
+        </button>
       </form>
     </div>
   );
