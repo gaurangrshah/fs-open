@@ -5,9 +5,9 @@ function AnecdoteForm({ dispatch }) {
   const addAnecdote = (e) => {
     e.preventDefault();
 
-    const content = e.target.querySelector("input");
+    const content = e.target.querySelector("input").value;
     e.target.querySelector("input").value = "";
-    dispatch(createAnecdote(content.value));
+    dispatch(createAnecdote(content));
   };
   return (
     <>
