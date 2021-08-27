@@ -1,0 +1,61 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are grat",
+      "id": 1
+    },
+    {
+      "content": "the best featrure ever <3",
+      "id": 2
+    },
+    {
+      "content": "this is a test",
+      "id": 3
+    },
+    {
+      "content": "now and then",
+      "id": 4
+    },
+    {
+      "content": "win or loose",
+      "id": 5
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "kaltsoon",
+      "number": "045-2323456",
+      "id": 2
+    },
+    {
+      "name": "Greg Shah",
+      "number": "000-000-0000",
+      "id": 3
+    },
+    {
+      "name": "Greg Shah",
+      "number": "000-000-0000",
+      "id": 4
+    },
+    {
+      "name": "Greg Shah",
+      "number": "afasfas",
+      "id": 5
+    },
+    {
+      "name": "Tom",
+      "number": "sdfasdfa",
+      "id": 6
+    },
+    {
+      "name": "Giles",
+      "number": "000",
+      "id": 7
+    }
+  ]
+}
