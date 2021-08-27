@@ -1,8 +1,6 @@
 import anecdotesService from "../services/anecdotes";
 
 const reducer = (state = [], action) => {
-  console.table(state);
-  console.log("action", action);
   switch (action.type) {
     case "ADD_ANECDOTE":
       return state.concat(action.anecdote);

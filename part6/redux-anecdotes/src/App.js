@@ -1,21 +1,13 @@
 import React, { useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import AnecdoteForm from "./components/AnecdoteForm";
-import Anecdotelist from "./components/AnecdoteList";
+import AnecdotesList from "./components/AnecdotesList";
 import Notification from "./components/Notification";
 import Filter from "./components/Fitler";
-import anecdotesService from "./services/anecdotes";
 import { initializeAnecdotes } from "./reducers/anecdoteReducer";
 
 const App = () => {
   const dispatch = useDispatch();
-
-  const anecdotes = useSelector(({ filter, anecdotes }) => {
-    const regex = new RegExp(filter, "i");
-    return filter?.length
-      ? anecdotes.filter((anecdote) => anecdote.content.match(regex))
-      : anecdotes;
-  });
 
   useEffect(() => {
     dispatch(initializeAnecdotes());
@@ -26,11 +18,8 @@ const App = () => {
       <Notification />
       <h2>Anecdotes</h2>
       <Filter />
-      <Anecdotelist
-        anecdotes={anecdotes.sort((a, b) => b.votes - a.votes)}
-        dispatch={dispatch}
-      />
-      <AnecdoteForm dispatch={dispatch} />
+      <AnecdotesList />
+      <AnecdoteForm />
     </div>
   );
 };

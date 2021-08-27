@@ -1,15 +1,16 @@
 import React from "react";
+import { connect } from "react-redux";
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import { setNotification } from "../reducers/notificationReducer";
 
-function AnecdoteForm({ dispatch }) {
+function AnecdoteForm({ createAnecdote, setNotification }) {
   const addAnecdote = async (e) => {
     e.preventDefault();
 
-    const content = e.target.querySelector("input").value;
+    const content = e.target.querySelector("input").value.trim();
     e.target.querySelector("input").value = "";
-    dispatch(createAnecdote(content));
-    dispatch(setNotification(`New anecdote '${content}' successfully added`));
+    createAnecdote(content);
+    setNotification(`New anecdote '${content}' added successfully`);
   };
   return (
     <>
@@ -24,4 +25,4 @@ function AnecdoteForm({ dispatch }) {
   );
 }
 
-export default AnecdoteForm;
+export default connect(null, { createAnecdote, setNotification })(AnecdoteForm);
