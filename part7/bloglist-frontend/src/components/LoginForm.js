@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import { login } from "../reducers/auth-reducer";
+
 import { setNotification } from "../reducers/notification-reducer";
 
 const LoginForm = () => {
+  const history = useHistory();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,6 +20,7 @@ const LoginForm = () => {
 
       setUsername("");
       setPassword("");
+      history.push("/blogs");
     } catch (exception) {
       dispatch(setNotification("wrong credentials", "error"));
     }

@@ -1,21 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch } from "react-redux";
 import { remove, like } from "../reducers/blog-reducer";
 import { setNotification } from "../reducers/notification-reducer";
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
-  const [visible, setVisible] = useState(false);
-
-  const showWhenVisible = {
-    display: visible ? "block" : "none",
-    width: "100%",
-    border: "1px solid red",
-  };
-
-  const toggleVisibility = () => {
-    setVisible(!visible);
-  };
 
   const blogStyle = {
     paddingTop: 10,
@@ -42,16 +31,13 @@ const Blog = ({ blog, user }) => {
     }
   };
 
+  if (!blog) return null;
+
   return (
     <li style={{ display: "flex", flexDirection: "column" }}>
       <div style={blogStyle}>
         <div>
           {blog.title} - {blog.author}
-          <button onClick={toggleVisibility}>
-            {visible ? "cancel" : "view"}
-          </button>
-        </div>
-        <div style={showWhenVisible}>
           <div>
             <p className='likes-holder'>
               <span>likes: </span>

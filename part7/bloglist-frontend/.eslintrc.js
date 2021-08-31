@@ -25,8 +25,6 @@ module.exports = {
     "arrow-spacing": ["error", { before: true, after: true }],
     "no-console": 0,
     "react/prop-types": 0,
-    indent: ["error", 2, { SwitchCase: 1 }],
-    "multiline-ternary": ["error", "never"],
   },
   settings: {
     react: {
