@@ -20,13 +20,22 @@ const create = async (newObject) => {
   const response = await axios.post(baseUrl, newObject, config);
   return response.data;
 };
-const update = (id, newObject) => {
+
+const update = async (id, newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, config);
+  return response.data;
+};
+
+const like = async (id, newObject) => {
   const config = {
     headers: { Authorization: token },
   };
 
-  const request = axios.put(`${baseUrl}/${id}`, newObject, config);
-  return request.then((response) => response.data);
+  const response = await axios.put(`${baseUrl}/${id}`, newObject, config);
+  return response.data;
 };
 
 const remove = (id) => {
@@ -38,6 +47,6 @@ const remove = (id) => {
   return request.then((response) => response.data);
 };
 
-const blogService = { getAll, create, update, remove, setToken };
+const blogService = { getAll, create, update, like, remove, setToken };
 
 export default blogService;

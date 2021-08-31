@@ -11,7 +11,7 @@ module.exports = {
     ecmaFeatures: {
       jsx: true,
     },
-    ecmaVersion: 2018,
+    ecmaVersion: 2020,
     sourceType: "module",
   },
   plugins: ["react", "jest", "cypress"],
@@ -26,6 +26,7 @@ module.exports = {
     "no-console": 0,
     "react/prop-types": 0,
     indent: ["error", 2, { SwitchCase: 1 }],
+    "multiline-ternary": ["error", "never"],
   },
   settings: {
     react: {

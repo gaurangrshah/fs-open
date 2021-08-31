@@ -16,28 +16,35 @@ const authReducer = (state = null, action) => {
 export const login = (credentials) => async (dispatch) => {
   try {
     let user = await loginService.login(credentials);
-    localStorage.setItem("user", JSON.stringify(user));
-    blogService.setToken(user.token);
-    return dispatch({
-      type: "LOGIN_USER",
-      data: user,
-    });
-  } catch (error) {
-    setNotification("Wrong credentials", "error");
+    if (user) {
+      dispatch({
+        type: "LOGIN_USER",
+        data: user,
+      });
+
+      localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
+      blogService.setToken(user.token);
+      dispatch(setNotification(`${user.username} logged in`, "success"));
+    } else throw new Error("login error");
+  } catch (exception) {
+    dispatch(setNotification("Wrong credentials", "error"));
+    blogService.setToken("");
   }
 };
 
+export const setUser = (user) => {
+  return {
+    type: "LOGIN_USER",
+    data: user,
+  };
+};
+
 export const logout = () => async (dispatch) => {
-  localStorage.removeItem("user");
+  localStorage.removeItem("loggedBlogappUser");
+  blogService.setToken("");
   return dispatch({
     type: "LOGOUT_USER",
   });
 };
-
-export const setUser = (user) => async (dispatch) =>
-  dispatch({
-    type: "LOGIN_USER",
-    data: user,
-  });
 
 export default authReducer;

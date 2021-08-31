@@ -1,6 +1,12 @@
-import React, { useState,  } from "react";
+/* eslint-disable no-unused-vars */
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { create } from "../reducers/blog-reducer";
+import { setNotification } from "../reducers/notification-reducer";
 
-const BlogForm = ({ handleCreate }) => {
+const BlogForm = ({ user, toggleVisibility }) => {
+  const dispatch = useDispatch();
+
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -8,7 +14,26 @@ const BlogForm = ({ handleCreate }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await handleCreate({ title, author, url });
+    if (!user) {
+      dispatch(setNotification("Please log in to create a new blog", "error"));
+      return;
+    }
+
+    if (!title || !url) {
+      dispatch(setNotification("Please fill in all fields", "error"));
+      return;
+    }
+
+    try {
+      toggleVisibility();
+      dispatch(create({ title, author, url }));
+      dispatch(
+        setNotification(`New blog: ${title} by: ${author} added`, "success")
+      );
+    } catch (exception) {
+      dispatch(setNotification("Invalid blog", "error"));
+    }
+
     setTitle("");
     setAuthor("");
     setUrl("");
@@ -41,12 +66,12 @@ const BlogForm = ({ handleCreate }) => {
         />
       </div>
       <div>
-        <button type='submit'>
-          save
-        </button>
+        <button type='submit'>save</button>
       </div>
     </form>
   );
 };
 
 export default BlogForm;
+
+/* eslint-enable no-unused-vars */

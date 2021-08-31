@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { remove, like } from "../reducers/blog-reducer";
+import { setNotification } from "../reducers/notification-reducer";
 
-const Blog = ({ blog }) => {
+const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
   const [visible, setVisible] = useState(false);
 
@@ -25,8 +26,19 @@ const Blog = ({ blog }) => {
   };
 
   const handleConfirmAndDelete = async (blog) => {
-    if (window.confirm("Are you sure you want to delete this blog?")) {
-      dispatch(remove(blog));
+    if (!user) {
+      dispatch(setNotification("You need to log in first", "error"));
+      return;
+    }
+
+    try {
+      if (window.confirm("Are you sure you want to delete this blog?")) {
+        dispatch(remove(blog));
+      }
+      dispatch(setNotification(`Deleted blog: ${blog.id}`, "success"));
+    } catch (e) {
+      console.error("🚀 | file: Blog.js | line 33 | e", e);
+      dispatch(setNotification("Invalid blog", "error"));
     }
   };
 

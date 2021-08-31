@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-// import PropTypes from "prop-types";
-// import loginService from "../services/login";
 import { login } from "../reducers/auth-reducer";
 import { setNotification } from "../reducers/notification-reducer";
 
@@ -15,16 +13,7 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      // const user = await loginService.login({
-      //   username,
-      //   password,
-      // });
-
-      // window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-
-      // handleSubmit(user);
       dispatch(login({ username, password }));
-      dispatch(setNotification(`${username} logged in`, "success"));
 
       setUsername("");
       setPassword("");
@@ -64,9 +53,5 @@ const LoginForm = () => {
     </div>
   );
 };
-
-// LoginForm.propTypes = {
-//   handleError: PropTypes.func.isRequired,
-// };
 
 export default LoginForm;
