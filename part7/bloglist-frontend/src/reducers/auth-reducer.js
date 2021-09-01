@@ -32,11 +32,15 @@ export const login = (credentials) => async (dispatch) => {
   }
 };
 
-export const setUser = (user) => {
-  return {
-    type: "LOGIN_USER",
-    data: user,
-  };
+export const setUserToken = (user) => async (dispatch) => {
+  if (user.token) {
+    blogService.setToken(user.token);
+    dispatch({
+      type: "LOGIN_USER",
+      data: user,
+    });
+  }
+  return;
 };
 
 export const logout = () => async (dispatch) => {

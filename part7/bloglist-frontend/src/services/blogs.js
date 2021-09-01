@@ -38,6 +38,20 @@ const like = async (id, newObject) => {
   return response.data;
 };
 
+const comment = async (id, content) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.post(
+    `${baseUrl}/${id}/comments`,
+    content,
+    config
+  );
+  console.log("🚀 | file: blogs.js | line 51 | response", response);
+  return response.data;
+};
+
 const remove = (id) => {
   const config = {
     headers: { Authorization: token },
@@ -47,6 +61,14 @@ const remove = (id) => {
   return request.then((response) => response.data);
 };
 
-const blogService = { getAll, create, update, like, remove, setToken };
+const blogService = {
+  getAll,
+  create,
+  update,
+  like,
+  remove,
+  setToken,
+  comment,
+};
 
 export default blogService;

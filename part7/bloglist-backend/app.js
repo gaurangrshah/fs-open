@@ -6,7 +6,8 @@ const cors = require("cors");
 const blogRouter = require("./controllers/blog");
 const userRouter = require("./controllers/user");
 const loginRouter = require("./controllers/login");
-const testRouter = require("./controllers/testing");
+// eslint-disable-next-line no-unused-vars
+const testingRouter = require("./controllers/testing");
 const middleware = require("./utils/middleware");
 const logger = require("./utils/logger");
 

@@ -47,13 +47,13 @@ blogRouter.delete("/:id", async (request, response) => {
 });
 
 blogRouter.put("/:id", async (request, response) => {
+  if (!request.user) {
+    return response.status(400).json({ error: "must be authenticated" });
+  }
+
   let blog = await Blog.findById(request.params.id);
   if (!blog) {
     return response.status(404).end();
-  }
-
-  if (!request.user) {
-    return response.status(400).json({ error: "must be authenticated" });
   }
 
   if (request.user.id !== blog.user.toString()) {
@@ -63,6 +63,32 @@ blogRouter.put("/:id", async (request, response) => {
   blog = Object.assign(blog, request.body);
   const savedBlog = await blog.save();
   response.json(savedBlog.toJSON());
+});
+
+blogRouter.post("/:id/comments", async (request, response) => {
+  if (!request.user) {
+    return response.status(401).json({ error: "must be authenticated" });
+  }
+
+  const blog = await Blog.findById(request.params.id).populate("user", {
+    username: 1,
+    name: 1,
+    id: 1,
+  });
+
+  if (!blog) {
+    return response.status(404).end();
+  }
+
+  if (!request.body?.content) {
+    return response.status(400).json({ error: "content missing" });
+  }
+
+  const comment = request.body.content;
+  console.log("🚀 | file: blog.js | line 88 | comment", comment);
+  blog.comments = blog.comments.concat(comment);
+  await blog.save();
+  response.status(201).json(comment);
 });
 
 module.exports = blogRouter;

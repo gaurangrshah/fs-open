@@ -2,6 +2,7 @@ import React from "react";
 import { useDispatch } from "react-redux";
 import { remove, like } from "../reducers/blog-reducer";
 import { setNotification } from "../reducers/notification-reducer";
+import CommentForm from "./CommentForm";
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
@@ -55,6 +56,16 @@ const Blog = ({ blog, user }) => {
           >
             remove
           </button>
+        </div>
+        <div>
+          <CommentForm id={blog.id} />
+          <ul>
+            {blog.comments?.length ? (
+              blog?.comments.map((comment, i) => <li key={i}>{comment}</li>)
+            ) : (
+              <p>No comments yet</p>
+            )}
+          </ul>
         </div>
       </div>
     </li>

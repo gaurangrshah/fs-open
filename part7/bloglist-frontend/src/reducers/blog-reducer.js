@@ -67,6 +67,27 @@ export const update = (id, content) => {
   };
 };
 
+export const comment = (id, comment) => {
+  return async (dispatch) => {
+    try {
+      const updatedBlog = await blogService.comment(id, { content: comment });
+      console.log(
+        "🚀 | file: blog-reducer.js | line 74 | updatedBlog",
+        updatedBlog
+      );
+      dispatch(
+        setNotification(`commented on blog ${updatedBlog.title}`, "success")
+      );
+      dispatch({
+        type: "UPDATE_BLOG",
+        data: { ...updatedBlog },
+      });
+    } catch (exception) {
+      dispatch(setNotification(`cannot comment on blog ${id}`, "error"));
+    }
+  };
+};
+
 export const like = (content) => {
   return async (dispatch) => {
     try {
@@ -78,6 +99,7 @@ export const like = (content) => {
         type: "LIKE_BLOG",
         data: { ...updatedBlog },
       });
+      dispatch(initializeBlogs());
     } catch (exception) {
       dispatch(setNotification(`cannot set like on ${content.title}`, "error"));
     }

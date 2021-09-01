@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Switch, Route, useRouteMatch } from "react-router-dom";
+import { Switch, Route, Link, useRouteMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
@@ -11,7 +11,7 @@ import User from "./components/User";
 import Nav from "./components/Nav";
 
 import { initializeBlogs } from "./reducers/blog-reducer";
-import { setUser, logout } from "./reducers/auth-reducer";
+import { setUserToken, logout } from "./reducers/auth-reducer";
 import { initializeUsers } from "./reducers/users-reducer";
 
 const App = () => {
@@ -19,6 +19,7 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
   const blogs = useSelector((state) => state.blog);
+  console.log("🚀 | file: App.js | line 22 | blogs", blogs);
 
   const blogFormRef = useRef();
 
@@ -35,7 +36,8 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
-      dispatch(setUser(user));
+      console.log("🚀 | file: App.js | line 38 | user", user);
+      dispatch(setUserToken(user));
     }
   }, []);
 
@@ -65,17 +67,19 @@ const App = () => {
   return (
     <>
       <Nav>
-        <div style={{ display: "flex" }}>
-          logged in as: {user.name}
-          <span>
-            <button onClick={handleLogout}>Logout</button>
-          </span>
-        </div>
+        {user ? (
+          <div style={{ display: "flex" }}>
+            logged in as: {user.name}
+            <span>
+              <button onClick={handleLogout}>Logout</button>
+            </span>
+          </div>
+        ) : (
+          loginForm()
+        )}
       </Nav>
       <Notification />
-      {!user ? (
-        loginForm()
-      ) : (
+      {!user ? null : (
         <>
           <Switch>
             <Route path='/users/:id'>{users && <User user={currUser} />}</Route>
@@ -87,7 +91,9 @@ const App = () => {
               {blogs
                 .sort((a, b) => b.likes - a.likes)
                 .map((blog) => (
-                  <Blog key={blog.id} {...{ blog, user }} />
+                  <div key={blog.id}>
+                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                  </div>
                 ))}
               <Togglable buttonLabel='create new blog' ref={blogFormRef}>
                 <BlogForm
