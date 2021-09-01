@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { Switch, Route, useRouteMatch, Link } from "react-router-dom";
+import { Switch, Route, useRouteMatch } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
@@ -8,6 +8,7 @@ import BlogForm from "./components/BlogForm";
 import LoginForm from "./components/LoginForm";
 import Users from "./components/Users";
 import User from "./components/User";
+import Nav from "./components/Nav";
 
 import { initializeBlogs } from "./reducers/blog-reducer";
 import { setUser, logout } from "./reducers/auth-reducer";
@@ -63,22 +64,19 @@ const App = () => {
 
   return (
     <>
+      <Nav>
+        <div style={{ display: "flex" }}>
+          logged in as: {user.name}
+          <span>
+            <button onClick={handleLogout}>Logout</button>
+          </span>
+        </div>
+      </Nav>
       <Notification />
       {!user ? (
         loginForm()
       ) : (
         <>
-          <div style={{ display: "flex" }}>
-            <div>
-              logged in as: {user.name}
-              <span>
-                <button onClick={handleLogout}>Logout</button>
-              </span>
-            </div>
-            <div>
-              See more <Link to='/users'>Users</Link>
-            </div>
-          </div>
           <Switch>
             <Route path='/users/:id'>{users && <User user={currUser} />}</Route>
             <Route path='/blogs/:id'>
@@ -109,4 +107,3 @@ const App = () => {
 };
 
 export default App;
-
