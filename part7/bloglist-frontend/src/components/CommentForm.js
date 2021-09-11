@@ -3,17 +3,13 @@ import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { Button, Input } from "@chakra-ui/react";
 
-import {
-  comment as addComment,
-  initializeBlogs,
-} from "../reducers/blog-reducer";
+import { comment as addComment } from "../reducers/blog-reducer";
 
 import { setNotification } from "../reducers/notification-reducer";
 
 const CommentForm = ({ id }) => {
   const history = useHistory();
   const { pathname } = useLocation();
-  console.log("🚀 | file: CommentForm.js | line 14 | pathname", pathname);
   const [comment, setComment] = useState("");
   const [showForm, setShowForm] = useState(false);
 
@@ -29,7 +25,6 @@ const CommentForm = ({ id }) => {
       setComment("");
       setShowForm(false);
 
-      dispatch(initializeBlogs());
       history.push(pathname);
     } catch (exception) {
       dispatch(setNotification("wrong credentials", "error"));

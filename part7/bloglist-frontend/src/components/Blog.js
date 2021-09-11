@@ -1,5 +1,6 @@
 import React from "react";
 import { useDispatch } from "react-redux";
+import { useHistory } from "react-router";
 import {
   Box,
   // Button,
@@ -18,6 +19,7 @@ import CommentForm from "./CommentForm";
 
 const Blog = ({ blog, user }) => {
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const handleConfirmAndDelete = async (blog) => {
     if (!user) {
@@ -30,6 +32,7 @@ const Blog = ({ blog, user }) => {
         dispatch(remove(blog));
       }
       dispatch(setNotification(`Deleted blog: ${blog.id}`, "success"));
+      history.push("/blogs");
     } catch (e) {
       console.error("🚀 | file: Blog.js | line 33 | e", e);
       dispatch(setNotification("Invalid blog", "error"));

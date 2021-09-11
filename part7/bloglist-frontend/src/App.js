@@ -27,7 +27,6 @@ const App = () => {
   const user = useSelector((state) => state.user);
   const users = useSelector((state) => state.users);
   const blogs = useSelector((state) => state.blog);
-  console.log("🚀 | file: App.js | line 22 | blogs", blogs);
 
   const blogFormRef = useRef();
 
@@ -62,10 +61,10 @@ const App = () => {
     );
   };
 
-  const matchUser = useRouteMatch("/users/:id");
-  const currUser = matchUser
-    ? users.find((user) => user.id === matchUser.params.id)
-    : null;
+  // const matchUser = useRouteMatch("/users/:id");
+  // const currUser = matchUser
+  //   ? users.find((user) => user.id === matchUser.params.id)
+  //   : null;
 
   const matchBlog = useRouteMatch("/blogs/:id");
   const currBlog = matchBlog
@@ -92,10 +91,10 @@ const App = () => {
           <>
             <Switch>
               <Route path="/users/:id">
-                {users && <User user={currUser} />}
+                {users && <User user={user} />}
               </Route>
               <Route path="/blogs/:id">
-                {blogs && <Blog user={currUser} blog={currBlog} />}
+                {blogs && <Blog user={user} blog={currBlog} />}
               </Route>
               <Route path="/blogs">
                 <Box p={6}>

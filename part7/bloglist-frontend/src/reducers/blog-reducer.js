@@ -26,7 +26,7 @@ export const initializeBlogs = () => {
   return async (dispatch) => {
     try {
       const blogs = await blogService.getAll();
-      dispatch(setNotification("Blogs initialized", "success"));
+      // dispatch(setNotification("Blogs initialized", "success"));
       dispatch({
         type: "INIT",
         data: blogs,
@@ -71,17 +71,14 @@ export const comment = (id, comment) => {
   return async (dispatch) => {
     try {
       const updatedBlog = await blogService.comment(id, { content: comment });
-      console.log(
-        "🚀 | file: blog-reducer.js | line 74 | updatedBlog",
-        updatedBlog
-      );
-      dispatch(
-        setNotification(`commented on blog ${updatedBlog.title}`, "success")
-      );
+      dispatch(setNotification(`commented on blog with id: ${id}`, "success"));
       dispatch({
         type: "UPDATE_BLOG",
         data: { ...updatedBlog },
       });
+      setTimeout(() => {
+        dispatch(initializeBlogs());
+      }, 200);
     } catch (exception) {
       dispatch(setNotification(`cannot comment on blog ${id}`, "error"));
     }
@@ -97,7 +94,7 @@ export const like = (content) => {
       dispatch(setNotification(`add like to blog ${content.title}`, "success"));
       dispatch({
         type: "LIKE_BLOG",
-        data: { ...updatedBlog },
+        data: updatedBlog,
       });
       dispatch(initializeBlogs());
     } catch (exception) {
