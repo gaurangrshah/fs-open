@@ -26,3 +26,5 @@ cypress/videos
 cypress/screenshots
 .coverage
 src/sandbox.js
+
+/.vscode
