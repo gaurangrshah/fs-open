@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
+import { Button, Input } from "@chakra-ui/react";
+
 import { create } from "../reducers/blog-reducer";
 import { setNotification } from "../reducers/notification-reducer";
 
@@ -22,7 +24,6 @@ const BlogForm = ({ user, toggleVisibility }) => {
       dispatch(setNotification("Please fill in all fields", "error"));
       return;
     }
-
     try {
       toggleVisibility();
       dispatch(create({ title, author, url }));
@@ -42,30 +43,30 @@ const BlogForm = ({ user, toggleVisibility }) => {
     <form onSubmit={handleSubmit}>
       <div>
         Title:{" "}
-        <input
-          id='title'
+        <Input
+          id="title"
           value={title}
           onChange={({ target }) => setTitle(target.value)}
         />
       </div>
       <div>
         Author:{" "}
-        <input
-          id='author'
+        <Input
+          id="author"
           value={author}
           onChange={({ target }) => setAuthor(target.value)}
         />
       </div>
       <div>
         Url:{" "}
-        <input
-          id='url'
+        <Input
+          id="url"
           value={url}
           onChange={({ target }) => setUrl(target.value)}
         />
       </div>
       <div>
-        <button type='submit'>save</button>
+        <Button type="submit">save</Button>
       </div>
     </form>
   );

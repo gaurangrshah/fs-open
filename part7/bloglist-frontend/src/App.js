@@ -1,6 +1,14 @@
 import React, { useEffect, useRef } from "react";
-import { Switch, Route, Link, useRouteMatch } from "react-router-dom";
+import {
+  Switch,
+  Route,
+  Link as ReactLink,
+  useRouteMatch,
+} from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { ChakraProvider } from "@chakra-ui/react";
+import { Avatar, Box, Button, Flex, Heading, Link } from "@chakra-ui/react";
+
 import Blog from "./components/Blog";
 import Notification from "./components/Notification";
 import Togglable from "./components/Togglable";
@@ -48,7 +56,7 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <Togglable buttonLabel='log in'>
+      <Togglable buttonLabel="log in">
         <LoginForm />
       </Togglable>
     );
@@ -66,48 +74,60 @@ const App = () => {
 
   return (
     <>
-      <Nav>
-        {user ? (
-          <div style={{ display: "flex" }}>
-            logged in as: {user.name}
-            <span>
-              <button onClick={handleLogout}>Logout</button>
-            </span>
-          </div>
-        ) : (
-          loginForm()
+      <ChakraProvider>
+        <Box display="flex" p={4} align="center" width="ful">
+          <Nav>
+            {user ? (
+              <Flex justify="flex-end" w="full">
+                <Avatar name={user.name} mr={2} />
+                <Button onClick={handleLogout}>Logout</Button>
+              </Flex>
+            ) : (
+              loginForm()
+            )}
+          </Nav>
+        </Box>
+        <Notification />
+        {!user ? null : (
+          <>
+            <Switch>
+              <Route path="/users/:id">
+                {users && <User user={currUser} />}
+              </Route>
+              <Route path="/blogs/:id">
+                {blogs && <Blog user={currUser} blog={currBlog} />}
+              </Route>
+              <Route path="/blogs">
+                <Box p={6}>
+                  <Heading as="h2" mb={4} borderBottom="1px">
+                    blogs
+                  </Heading>
+                  <Box mt={4}>
+                    <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+                      <BlogForm
+                        user={user}
+                        toggleVisibility={blogFormRef.current?.toggleVisibility}
+                      />
+                    </Togglable>
+                  </Box>
+                  {blogs
+                    .sort((a, b) => b.likes - a.likes)
+                    .map((blog) => (
+                      <Box key={blog.id} my={6} p={4} border="1px" rounded={5}>
+                        <Link as={ReactLink} to={`/blogs/${blog.id}`}>
+                          {blog.title}
+                        </Link>
+                      </Box>
+                    ))}
+                </Box>
+              </Route>
+              <Route path="/users">
+                <Users users={users} />
+              </Route>
+            </Switch>
+          </>
         )}
-      </Nav>
-      <Notification />
-      {!user ? null : (
-        <>
-          <Switch>
-            <Route path='/users/:id'>{users && <User user={currUser} />}</Route>
-            <Route path='/blogs/:id'>
-              {blogs && <Blog user={currUser} blog={currBlog} />}
-            </Route>
-            <Route path='/blogs'>
-              <h2>blogs</h2>
-              {blogs
-                .sort((a, b) => b.likes - a.likes)
-                .map((blog) => (
-                  <div key={blog.id}>
-                    <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
-                  </div>
-                ))}
-              <Togglable buttonLabel='create new blog' ref={blogFormRef}>
-                <BlogForm
-                  user={user}
-                  toggleVisibility={blogFormRef.current?.toggleVisibility}
-                />
-              </Togglable>
-            </Route>
-            <Route path='/users'>
-              <Users users={users} />
-            </Route>
-          </Switch>
-        </>
-      )}
+      </ChakraProvider>
     </>
   );
 };

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
+import { Button, Input } from "@chakra-ui/react";
+
 import {
   comment as addComment,
   initializeBlogs,
@@ -35,24 +37,21 @@ const CommentForm = ({ id }) => {
   };
 
   const ShowButton = ({ button }) => {
-    return <button {...button}>Add Comment</button>;
+    return <Button {...button}>Add Comment</Button>;
   };
   const AddButton = ({ button }) => {
-    return <button {...button}>Add Comment</button>;
+    return <Button {...button}>Submit Comment</Button>;
   };
 
   return (
-    <div>
-      <h3>Comments</h3>
-      <hr />
-
+    <>
       {showForm ? (
         <form onSubmit={handleComment}>
           <div>
             comment
-            <input
-              id='comment'
-              name='comment'
+            <Input
+              id="comment"
+              name="comment"
               value={comment}
               onChange={({ target }) => setComment(target.value)}
             />
@@ -74,7 +73,7 @@ const CommentForm = ({ id }) => {
           }}
         />
       )}
-    </div>
+    </>
   );
 };
 

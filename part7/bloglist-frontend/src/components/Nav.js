@@ -1,19 +1,22 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link as ReactLink } from "react-router-dom";
+import { Box, Flex, Link, List, ListItem } from "@chakra-ui/react";
 
 const Nav = ({ children }) => {
   const menu = ["blogs", "users"];
   return (
-    <nav>
-      <ul style={{ display: "flex", listStyleType: "none" }}>
+    <Flex as="nav" justify="space-between" w="full">
+      <List as="ul" display="flex" align="center" listStyleType="none">
         {menu.map((item) => (
-          <li key={item} style={{ margin: "0 1em" }}>
-            <Link to={`/${item}`}>{item}</Link>
-          </li>
+          <ListItem key={item} mx={3}>
+            <Link as={ReactLink} to={`/${item}`} textTransform="capitalize" fontWeight="600">
+              {item}
+            </Link>
+          </ListItem>
         ))}
-        <li>{children}</li>
-      </ul>
-    </nav>
+      </List>
+      <Box>{children}</Box>
+    </Flex>
   );
 };
 

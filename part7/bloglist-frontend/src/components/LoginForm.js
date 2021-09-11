@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
-import { login } from "../reducers/auth-reducer";
+import { Button, Input } from "@chakra-ui/react";
 
+import { login } from "../reducers/auth-reducer";
 import { setNotification } from "../reducers/notification-reducer";
 
 const LoginForm = () => {
@@ -33,26 +34,26 @@ const LoginForm = () => {
       <form onSubmit={handleLogin}>
         <div>
           username
-          <input
-            id='username'
-            name='username'
+          <Input
+            id="username"
+            name="username"
             value={username}
             onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
           password
-          <input
-            id='password'
-            name='password'
-            type='password'
+          <Input
+            id="password"
+            name="password"
+            type="password"
             value={password}
             onChange={({ target }) => setPassword(target.value)}
           />
         </div>
-        <button id='login-button' type='submit'>
+        <Button id="login-button" type="submit" variant="solid">
           log in
-        </button>
+        </Button>
       </form>
     </div>
   );

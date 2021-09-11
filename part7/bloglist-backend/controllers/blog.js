@@ -85,7 +85,6 @@ blogRouter.post("/:id/comments", async (request, response) => {
   }
 
   const comment = request.body.content;
-  console.log("🚀 | file: blog.js | line 88 | comment", comment);
   blog.comments = blog.comments.concat(comment);
   await blog.save();
   response.status(201).json(comment);
